@@ -1,3 +1,0 @@
-description: "Static analysis to Elixir source code"
-steps:
-  - run: mix credo
