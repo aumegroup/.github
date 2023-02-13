@@ -2,13 +2,23 @@ name: Setup Elixir
 description: Checks out the code, configures Elixir, fetches dependencies, and manages build caching.
 inputs:
   elixir-version:
-    required: true
+    required: false
     type: string
     description: Elixir version to set up
   otp-version:
-    required: true
+    required: false
     type: string
     description: OTP version to set up
+  version-type: 
+    required: false
+    type: string
+    default: strict
+  version-file: 
+    required: false
+    type: string
+    default: .tool-versions
+    description: Parse the .tool-versions file for version
+    
   #################################################################
   # Everything below this line is optional.
   #
