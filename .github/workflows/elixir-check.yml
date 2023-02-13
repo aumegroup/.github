@@ -1,0 +1,29 @@
+name: Elixir Quality Checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  quality_checks:
+    name: Mix Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Elixir Project
+        uses: ./.github/actions/elixir-setup
+        with:
+          build-app: false
+      - name: Check for unused deps
+        run: mix deps.unlock --check-unused
+
+      - name: Mix Check
+        run: mix check
+        if: always()
