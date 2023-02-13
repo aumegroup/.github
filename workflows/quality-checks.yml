@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Elixir Project
         uses: ./.github/actions/elixir-setup
@@ -27,13 +27,10 @@ jobs:
         
       - name: Check code formatting
         run: mix format --check-formatted
-        # Check formatting even if there were unused deps so that
-        # we give devs as much feedback as possible & save some time.
         if: always()
         
       - name: Run Credo
         run: mix credo suggest --min-priority=normal
-        # Run Credo even if formatting or the unused deps check failed
         if: always()
         
       - name: Check for compile-time dependencies
