@@ -20,14 +20,6 @@ on:
         type: string
         default: .tool-versions
         description: Parse the .tool-versions file for version
-    
-  #################################################################
-  # Everything below this line is optional.
-  #
-  # It's designed to make compiling a reasonably standard Elixir
-  # codebase "just work," though there may be speed gains to be had
-  # by tweaking these flags.
-  #################################################################
       build-deps:
         required: false
         type: boolean
@@ -82,6 +74,7 @@ on:
             key: deps-${{ inputs.cache-key }}-${{ runner.os }}-${{ hashFiles('**/mix.lock') }}
             restore-keys: |
               deps-${{ inputs.cache-key }}-${{ runner.os }}-
+              
         - name: Get build cache
           uses: actions/cache@v2
           id: build-cache
@@ -90,6 +83,7 @@ on:
             key: build-${{ inputs.cache-key }}-${{ runner.os }}-${{ inputs.otp-version }}-${{ inputs.elixir-version }}-${{ env.MIX_ENV }}-${{ hashFiles('**/mix.lock') }}
             restore-keys: |
               build-${{ inputs.cache-key }}-${{ runner.os }}-${{ inputs.otp-version }}-${{ inputs.elixir-version }}-${{ env.MIX_ENV }}-
+     
         - name: Get Hex cache
           uses: actions/cache@v2
           id: hex-cache
@@ -98,11 +92,7 @@ on:
             key: build-${{ runner.os }}-${{ inputs.otp-version }}-${{ inputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
             restore-keys: |
               build-${{ runner.os }}-${{ inputs.otp-version }}-${{ inputs.elixir-version }}-
-        # In my experience, I have issues with incremental builds maybe 1 in 100
-        # times that are fixed by doing a full recompile.
-        # In order to not waste dev time on such trivial issues (while also reaping
-        # the time savings of incremental builds for *most* day-to-day development),
-        # I force a full recompile only on builds that we retry.
+
         - name: Clean to rule out incremental build as a source of flakiness
           if: github.run_attempt != '1'
           run: | 
@@ -123,13 +113,7 @@ on:
         - name: Install Dependencies
           run: mix deps.get
           shell: sh
-
-        # Normally we'd use `mix deps.compile` here, however that incurs a large
-        # performance penalty when the dependencies are already fully compiled:
-        # https://elixirforum.com/t/github-action-cache-elixir-always-recompiles-dependencies-elixir-1-13-3/45994/12
-        #
-        # Accoring to Jose Valim at the above link `mix loadpaths` will check and
-        # compile missing dependencies
+          
         - name: Compile Dependencies
           run: mix loadpaths
           shell: sh
