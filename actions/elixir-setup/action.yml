@@ -1,14 +1,6 @@
 name: Setup Elixir
 description: Checks out the code, configures Elixir, fetches dependencies, and manages build caching.
 inputs:
-  elixir-version:
-    required: true
-    type: string
-    description: Elixir version to set up
-  otp-version:
-    required: true
-    type: string
-    description: OTP version to set up
   #################################################################
   # Everything below this line is optional.
   #
@@ -60,8 +52,8 @@ runs:
       uses: erlef/setup-beam@v1
       id: beam
       with:
-        elixir-version: ${{ inputs.elixir-version }}
-        otp-version: ${{ inputs.otp-version }}
+        version-type: strict
+        version-file: .tool-versions
 
     - name: Get deps cache
       uses: actions/cache@v2
